@@ -89,6 +89,9 @@ dependencies:
   swr:
     specifier: ^2.2.5
     version: 2.2.5(react@18.3.1)
+  use-local-storage:
+    specifier: ^3.0.0
+    version: 3.0.0(react@18.3.1)
   zod:
     specifier: ^3.23.8
     version: 3.23.8
@@ -5570,6 +5573,14 @@ packages:
     dependencies:
       punycode: 2.3.1
     dev: true
+
+  /use-local-storage@3.0.0(react@18.3.1):
+    resolution: {integrity: sha512-wlPNnBCG3ULIJMr5A+dvWqLiPWCfsN1Kwijq+sAhT5yV4ex0u6XmZuNwP+RerIOfzBuz1pwSZuzhZMiluGQHfQ==}
+    peerDependencies:
+      react: '>=16.8.1'
+    dependencies:
+      react: 18.3.1
+    dev: false
 
   /use-sync-external-store@1.2.2(react@18.3.1):
     resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}

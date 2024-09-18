@@ -33,15 +33,26 @@ export function Chat({
     Array<string>
   >([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // useEffect(() => {
-  //   if (localStorage) {
-  //     localStorage.setItem(
-  //       "selected-file-pathnames",
-  //       JSON.stringify(selectedFilePathnames),
-  //     );
-  //   }
-  // }, [selectedFilePathnames]);
+  useEffect(() => {
+    if (isMounted !== false) {
+      localStorage.setItem(
+        "selected-file-pathnames",
+        JSON.stringify(selectedFilePathnames),
+      );
+    }
+  }, [selectedFilePathnames, isMounted]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    setSelectedFilePathnames(
+      JSON.parse(localStorage.getItem("selected-file-pathnames") || "[]"),
+    );
+  }, []);
 
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },
@@ -116,9 +127,14 @@ export function Chat({
             }}
           >
             <FileIcon />
-            <div className="absolute text-xs -top-2 -right-2 bg-blue-500 size-5 rounded-full flex flex-row justify-center items-center border-2 dark:border-zinc-900 border-white text-blue-50">
-              {selectedFilePathnames.length}
-            </div>
+            <motion.div
+              className="absolute text-xs -top-2 -right-2 bg-blue-500 size-5 rounded-full flex flex-row justify-center items-center border-2 dark:border-zinc-900 border-white text-blue-50"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {selectedFilePathnames?.length}
+            </motion.div>
           </div>
         </form>
       </div>
