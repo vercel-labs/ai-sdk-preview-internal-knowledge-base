@@ -28,6 +28,10 @@ export async function POST(request: Request) {
         author: session.user?.email!,
       });
     },
+    experimental_telemetry: {
+      isEnabled: true,
+      functionId: "stream-text",
+    },
   });
 
   return result.toDataStreamResponse({});
