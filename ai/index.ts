@@ -1,15 +1,14 @@
 import { auth } from "@/app/auth";
-import { list } from "@vercel/blob";
 import { openai } from "@ai-sdk/openai";
-import { getPdfContentFromUrl } from "@/utils/pdf";
-import { OpenAIEmbeddings } from "@langchain/openai";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import {
+  cosineSimilarity,
+  embed,
   Experimental_LanguageModelV1Middleware,
   generateObject,
+  generateText,
   experimental_wrapLanguageModel as wrapLanguageModel,
 } from "ai";
+import { getChunksByFilePaths } from "@/app/db";
 
 const middleware: Experimental_LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
@@ -28,6 +27,8 @@ const middleware: Experimental_LanguageModelV1Middleware = {
       .map((content) => content.text)
       .join("\n");
 
+    // Classify the user prompt as whether it requires more context or not
+
     const { object: classification } = await generateObject({
       model: openai("gpt-4o"),
       output: "enum",
@@ -42,45 +43,46 @@ const middleware: Experimental_LanguageModelV1Middleware = {
       return { ...params, prompt };
     }
 
+    const { text: searchPrompt } = await generateText({
+      model: openai("gpt-4o"),
+      system:
+        "generate a prompt that you can use to search a corpus of text that uses cosine similarity to find the most relevant chunks of text based on user prompt",
+      prompt: userPromptContent,
+    });
+
+    // Perform retrieval augmented generation
+
+    const { embedding: searchPromptEmbedding } = await embed({
+      model: openai.embedding("text-embedding-3-small"),
+      value: searchPrompt,
+    });
+
     // @ts-expect-error provider metadata is not typed
     const { files } = providerMetadata;
-    const { selection } = files;
+    const { selection }: { selection: Array<string> } = files;
 
-    const { blobs } = await list({
-      mode: "folded",
-      prefix: `${session.user?.email}/`,
+    const chunksBySelection = await getChunksByFilePaths({
+      filePaths: selection.map((path) => `${session.user?.email}/${path}`),
     });
 
-    const selectedBlobs = blobs.filter((blob) =>
-      selection.includes(blob.pathname.replace(`${session.user?.email}/`, "")),
-    );
+    const chunksWithSimilarity = chunksBySelection
+      .map((chunk) => ({
+        ...chunk,
+        similarity: cosineSimilarity(searchPromptEmbedding, chunk.embedding),
+      }))
+      .sort((a, b) => b.similarity - a.similarity);
 
-    const documents = await Promise.all(
-      selectedBlobs.map(async (blob) => {
-        const { downloadUrl } = blob;
-        return await getPdfContentFromUrl(downloadUrl);
-      }),
-    );
-
-    const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-    });
-    const chunkedDocuments = await textSplitter.createDocuments(documents);
-    const vectorStore = await MemoryVectorStore.fromDocuments(
-      chunkedDocuments,
-      new OpenAIEmbeddings(),
-    );
-
-    const chunks = await vectorStore.similaritySearch(userPromptContent);
+    const k = 10;
+    const topKChunks = chunksWithSimilarity.slice(0, k);
 
     // @ts-expect-error todo: will need to expose this type
     const recentMessageWithChunks: LanguageModelV1Message = {
       role: "user",
       content: [
         ...recentMessage.content,
-        ...chunks.map((chunk) => ({
+        ...topKChunks.map((chunk) => ({
           type: "text",
-          text: chunk.pageContent,
+          text: chunk.content,
         })),
       ],
     };

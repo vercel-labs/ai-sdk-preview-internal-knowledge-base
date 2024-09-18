@@ -31,15 +31,17 @@ export function Chat({
 }) {
   const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
-  >(JSON.parse(localStorage.getItem("selected-file-pathnames") || "[]"));
+  >([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "selected-file-pathnames",
-      JSON.stringify(selectedFilePathnames),
-    );
-  }, [selectedFilePathnames]);
+  // useEffect(() => {
+  //   if (localStorage) {
+  //     localStorage.setItem(
+  //       "selected-file-pathnames",
+  //       JSON.stringify(selectedFilePathnames),
+  //     );
+  //   }
+  // }, [selectedFilePathnames]);
 
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },

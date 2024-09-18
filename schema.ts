@@ -1,6 +1,14 @@
 import { Message } from "ai";
 import { InferSelectModel } from "drizzle-orm";
-import { pgTable, varchar, text, timestamp, json } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  varchar,
+  text,
+  real,
+  timestamp,
+  json,
+  integer,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("User", {
   email: varchar("email", { length: 64 }).primaryKey().notNull(),
@@ -16,6 +24,15 @@ export const chat = pgTable("Chat", {
     .references(() => user.email),
 });
 
+export const chunk = pgTable("Chunk", {
+  id: text("id").primaryKey().notNull(),
+  filePath: text("filePath").notNull(),
+  content: text("content").notNull(),
+  embedding: real("embedding").array().notNull(),
+});
+
 export type Chat = Omit<InferSelectModel<typeof chat>, "messages"> & {
   messages: Array<Message>;
 };
+
+export type Chunk = InferSelectModel<typeof chunk>;
