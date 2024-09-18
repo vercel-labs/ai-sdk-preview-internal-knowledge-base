@@ -1,12 +1,11 @@
 "use client";
 
-import useSWR from "swr";
 import { Message } from "ai";
 import { useChat } from "ai/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Files } from "@/components/files";
 import { AnimatePresence, motion } from "framer-motion";
-import { FileIcon, UploadIcon } from "@/components/icons";
+import { FileIcon } from "@/components/icons";
 import { Message as PreviewMessage } from "@/components/message";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
 
@@ -32,8 +31,15 @@ export function Chat({
 }) {
   const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
-  >([]);
+  >(JSON.parse(localStorage.getItem("selected-file-pathnames") || "[]"));
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "selected-file-pathnames",
+      JSON.stringify(selectedFilePathnames),
+    );
+  }, [selectedFilePathnames]);
 
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },
