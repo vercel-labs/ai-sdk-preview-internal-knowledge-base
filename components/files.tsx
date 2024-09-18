@@ -12,6 +12,7 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 export const Files = ({
   selectedFilePathnames,
@@ -23,6 +24,7 @@ export const Files = ({
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
+  const [deleteQueue, setDeleteQueue] = useState<Array<string>>([]);
   const { data: files, mutate } = useSWR("api/files/list", fetcher, {
     fallbackData: [],
   });
@@ -110,7 +112,11 @@ export const Files = ({
                 });
               }}
             >
-              {selectedFilePathnames.includes(file.pathname) ? (
+              {deleteQueue.includes(file.pathname) ? (
+                <div className="animate-spin">
+                  <LoaderIcon />
+                </div>
+              ) : selectedFilePathnames.includes(file.pathname) ? (
                 <CheckedSquare />
               ) : (
                 <UncheckedSquare />
@@ -126,9 +132,18 @@ export const Files = ({
             <div
               className="text-zinc-500 hover:bg-zinc-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 p-1 cursor-pointer rounded-md"
               onClick={async () => {
+                setDeleteQueue((currentQueue) => [
+                  ...currentQueue,
+                  file.pathname,
+                ]);
+
                 await fetch(`/api/files/delete?fileurl=${file.url}`, {
                   method: "DELETE",
                 });
+
+                setDeleteQueue((currentQueue) =>
+                  currentQueue.filter((filename) => filename !== file.pathname),
+                );
 
                 mutate();
               }}

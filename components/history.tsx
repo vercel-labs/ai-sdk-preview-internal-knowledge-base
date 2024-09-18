@@ -59,7 +59,7 @@ export const History = () => {
 
                 <Link
                   href="/"
-                  className="dark:text-zinc-400 dark:bg-zinc-700 hover:dark:bg-zinc-600 bg-zinc-100 p-1.5 rounded-md cursor-pointer"
+                  className="dark:text-zinc-400 dark:bg-zinc-700 hover:dark:bg-zinc-600 bg-zinc-100 hover:bg-zinc-200 p-1.5 rounded-md cursor-pointer"
                 >
                   <PencilEditIcon size={14} />
                 </Link>
