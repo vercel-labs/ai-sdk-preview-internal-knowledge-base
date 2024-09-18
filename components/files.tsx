@@ -30,17 +30,16 @@ export const Files = ({
 
   return (
     <motion.div
-      className="fixed top-0 right-0 w-dvw h-dvh p-4 flex flex-col gap-6 bg-white dark:bg-zinc-800  z-30"
+      className="fixed bottom-0 right-0 w-dvw h-96 p-4 flex flex-col gap-4 bg-white dark:bg-zinc-800 z-30"
       initial={{ y: "100%" }}
-      animate={{ y: "50%" }}
+      animate={{ y: "0%" }}
       exit={{ y: "100%" }}
       transition={{ type: "spring", stiffness: 400, damping: 40 }}
     >
       <div className="flex flex-row justify-between items-center">
-        <div className="text-sm flex flex-row gap-2">
-          <div className="text-zinc-900 dark:text-zinc-300">Uploads</div>
-          <div className="text-zinc-500 dark:text-zinc-400">
-            {files.length} Files
+        <div className="text-sm flex flex-row gap-3">
+          <div className="text-zinc-900 dark:text-zinc-300">
+            Manage Knowledge Base
           </div>
         </div>
 
@@ -83,7 +82,7 @@ export const Files = ({
         </div>
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full overflow-y-scroll">
         {files.map((file: any) => (
           <div
             key={file.pathname}
@@ -176,6 +175,12 @@ export const Files = ({
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex flex-row justify-end">
+        <div className="text-zinc-500 dark:text-zinc-400 text-sm">
+          {`${selectedFilePathnames.length}/${files.length}`} Selected
+        </div>
       </div>
     </motion.div>
   );
