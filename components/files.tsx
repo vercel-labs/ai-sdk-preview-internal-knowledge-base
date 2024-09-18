@@ -12,7 +12,6 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 
 export const Files = ({
   selectedFilePathnames,
@@ -51,6 +50,7 @@ export const Files = ({
           type="file"
           required
           className="opacity-0 pointer-events-none w-1"
+          accept="application/pdf"
           multiple={false}
           onChange={async (event) => {
             const file = event.target.files![0];
@@ -96,7 +96,8 @@ export const Files = ({
             <div
               className={cx(
                 "cursor-pointer",
-                selectedFilePathnames.includes(file.pathname)
+                selectedFilePathnames.includes(file.pathname) &&
+                  !deleteQueue.includes(file.pathname)
                   ? "text-blue-600 dark:text-zinc-50"
                   : "text-zinc-500",
               )}
@@ -143,6 +144,10 @@ export const Files = ({
 
                 setDeleteQueue((currentQueue) =>
                   currentQueue.filter((filename) => filename !== file.pathname),
+                );
+
+                setSelectedFilePathnames((currentSelections) =>
+                  currentSelections.filter((path) => path !== file.pathname),
                 );
 
                 mutate();
