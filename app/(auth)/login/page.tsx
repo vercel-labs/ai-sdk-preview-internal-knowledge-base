@@ -1,9 +1,31 @@
+"use client";
+
 import Link from "next/link";
 import { Form } from "@/app/form";
-import { signIn } from "@/app/auth";
 import { SubmitButton } from "@/components/submit-button";
+import { useActionState, useEffect } from "react";
+import { login, LoginActionState } from "../actions";
+import { toast } from "sonner";
+import { redirect, useRouter } from "next/navigation";
 
-export default function Login() {
+export default function Page() {
+  const router = useRouter();
+
+  const [state, formAction] = useActionState<LoginActionState, FormData>(
+    login,
+    {
+      status: "idle",
+    },
+  );
+
+  useEffect(() => {
+    if (state.status === "failed") {
+      toast.error("Invalid credentials!");
+    } else if (state.status === "success") {
+      router.refresh();
+    }
+  }, [state.status, router]);
+
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-white dark:bg-zinc-900">
       <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
@@ -13,17 +35,7 @@ export default function Login() {
             Use your email and password to sign in
           </p>
         </div>
-        <Form
-          action={async (formData: FormData) => {
-            "use server";
-
-            await signIn("credentials", {
-              redirectTo: "/",
-              email: formData.get("email") as string,
-              password: formData.get("password") as string,
-            });
-          }}
-        >
+        <Form action={formAction}>
           <SubmitButton>Sign in</SubmitButton>
           <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
             {"Don't have an account? "}

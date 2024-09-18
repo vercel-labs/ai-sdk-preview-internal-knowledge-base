@@ -1,23 +1,29 @@
+"use client";
+
 import Link from "next/link";
 import { Form } from "@/app/form";
-import { redirect } from "next/navigation";
-import { createUser, getUser } from "@/app/db";
 import { SubmitButton } from "@/components/submit-button";
+import { register, RegisterActionState } from "../actions";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
-export default function Login() {
-  async function register(formData: FormData) {
-    "use server";
-    let email = formData.get("email") as string;
-    let password = formData.get("password") as string;
-    let user = await getUser(email);
+export default function Page() {
+  const [state, formAction] = useActionState<RegisterActionState, FormData>(
+    register,
+    {
+      status: "idle",
+    },
+  );
 
-    if (user.length > 0) {
-      return "User already exists"; // TODO: Handle errors with useFormStatus
-    } else {
-      await createUser(email, password);
-      redirect("/login");
+  useEffect(() => {
+    if (state.status === "user_exists") {
+      toast.error("User already exists");
+    } else if (state.status === "failed") {
+      toast.error("Failed to create account");
+    } else if (state.status === "success") {
+      toast.success("Account created successfully");
     }
-  }
+  }, [state.status]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-white dark:bg-zinc-900">
@@ -28,7 +34,7 @@ export default function Login() {
             Create an account with your email and password
           </p>
         </div>
-        <Form action={register}>
+        <Form action={formAction}>
           <SubmitButton>Sign Up</SubmitButton>
           <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
             {"Already have an account? "}

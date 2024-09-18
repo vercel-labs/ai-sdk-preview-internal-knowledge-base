@@ -88,7 +88,7 @@ export const Files = ({
             key={file.pathname}
             className={`flex flex-row gap-4 items-center p-2 border-b dark:border-zinc-700 ${
               selectedFilePathnames.includes(file.pathname)
-                ? "bg-zinc-100 dark:bg-zinc-700"
+                ? "bg-zinc-100 dark:bg-zinc-700 dark:border-zinc-600"
                 : ""
             }`}
           >

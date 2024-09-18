@@ -1,0 +1,46 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { signIn } from "../auth";
+import { createUser, getUser } from "../db";
+
+export interface LoginActionState {
+  status: "idle" | "in_progress" | "success" | "failed";
+}
+
+export const login = async (
+  data: LoginActionState,
+  formData: FormData,
+): Promise<LoginActionState> => {
+  try {
+    await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      redirect: false,
+    });
+
+    return { status: "success" } as LoginActionState;
+  } catch {
+    return { status: "failed" } as LoginActionState;
+  }
+};
+
+export interface RegisterActionState {
+  status: "idle" | "in_progress" | "success" | "failed" | "user_exists";
+}
+
+export const register = async (
+  data: RegisterActionState,
+  formData: FormData,
+) => {
+  let email = formData.get("email") as string;
+  let password = formData.get("password") as string;
+  let user = await getUser(email);
+
+  if (user.length > 0) {
+    return { status: "user_exists" } as RegisterActionState;
+  } else {
+    await createUser(email, password);
+    redirect("/login");
+  }
+};
