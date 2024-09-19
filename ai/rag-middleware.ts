@@ -43,7 +43,8 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     // Classify the user prompt as whether it requires more context or not
     const { object: classification } = await generateObject({
-      model: openai("gpt-4o"),
+      // fast model for classification:
+      model: openai("gpt-4o-mini", { structuredOutputs: true }),
       output: "enum",
       enum: ["question", "statement", "other"],
       system: "classify the user message as a question, statement, or other",
@@ -54,7 +55,8 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     // Use hypothetical document embeddings:
     const { text: hypotheticalAnswer } = await generateText({
-      model: openai("gpt-4o-mini"), // fast model for generating hypothetical answer
+      // fast model for generating hypothetical answer:
+      model: openai("gpt-4o-mini", { structuredOutputs: true }),
       system: "Answer the users question:",
       prompt: lastUserMessageContent,
     });
