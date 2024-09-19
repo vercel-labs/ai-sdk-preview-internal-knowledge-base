@@ -66,6 +66,9 @@ export function Chat({
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },
     initialMessages,
+    onFinish: () => {
+      window.history.replaceState({}, "", `/${id}`);
+    },
   });
 
   const [messagesContainerRef, messagesEndRef] =
@@ -85,7 +88,10 @@ export function Chat({
               content={message.content}
             />
           ))}
-          <div ref={messagesEndRef} />
+          <div
+            ref={messagesEndRef}
+            className="flex-shrink-0 min-w-[24px] min-h-[24px]"
+          />
         </div>
 
         {messages.length === 0 && (
