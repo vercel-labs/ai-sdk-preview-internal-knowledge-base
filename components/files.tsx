@@ -56,9 +56,9 @@ export const Files = ({
           { "w-dvw h-96 bottom-0 right-0": !isDesktop },
           { "w-[600px] h-96 rounded-lg": isDesktop },
         )}
-        initial={{ y: "100%", scale: 0.98, opacity: 0 }}
+        initial={{ y: "100%", scale: 0.9, opacity: 0 }}
         animate={{ y: "0%", scale: 1, opacity: 1 }}
-        exit={{ y: "100%", scale: 0.98, opacity: 0 }}
+        exit={{ y: "100%", scale: 0.9, opacity: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 40 }}
         ref={drawerRef}
       >
@@ -110,11 +110,19 @@ export const Files = ({
 
         <div className="flex flex-col h-full overflow-y-scroll">
           {isLoading ? (
-            <div className="flex flex-col gap-6 pt-3 pl-2 absolute">
-              <div className="w-44 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
-              <div className="w-32 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
-              <div className="w-28 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
-              <div className="w-52 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+            <div className="flex flex-col">
+              {[44, 32, 52].map((item) => (
+                <div
+                  key={item}
+                  className="flex flex-row gap-4 p-2 border-b dark:border-zinc-700 items-center"
+                >
+                  <div className="size-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+                  <div
+                    className={`w-${item} h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse`}
+                  />
+                  <div className="h-[24px] w-1" />
+                </div>
+              ))}
             </div>
           ) : null}
 
@@ -177,7 +185,7 @@ export const Files = ({
               </div>
 
               <div
-                className="text-zinc-500 hover:bg-zinc-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 p-1 cursor-pointer rounded-md"
+                className="text-zinc-500 hover:bg-red-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 p-1 px-2 cursor-pointer rounded-md"
                 onClick={async () => {
                   setDeleteQueue((currentQueue) => [
                     ...currentQueue,
