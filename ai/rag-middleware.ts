@@ -1,4 +1,4 @@
-import { auth } from "@/app/auth";
+import { auth } from "@/app/(auth)/auth";
 import { getChunksByFilePaths } from "@/app/db";
 import { openai } from "@ai-sdk/openai";
 import {

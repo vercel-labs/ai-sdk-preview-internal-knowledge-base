@@ -1,6 +1,6 @@
 import { Chat } from "@/components/chat";
 import { generateId } from "ai";
-import { auth } from "../auth";
+import { auth } from "@/app/(auth)/auth";
 
 export default async function Page() {
   const session = await auth();
