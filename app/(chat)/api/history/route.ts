@@ -1,14 +1,13 @@
 import { auth } from "@/app/auth";
 import { getChatsByUser } from "@/app/db";
-import { NextResponse } from "next/server";
 
-export async function GET(): Promise<NextResponse> {
+export async function GET() {
   let session = await auth();
 
   if (!session || !session.user) {
-    return NextResponse.redirect("/login");
+    return Response.json("Unauthorized!", { status: 401 });
   }
 
   const chats = await getChatsByUser({ email: session.user.email! });
-  return NextResponse.json(chats);
+  return Response.json(chats);
 }

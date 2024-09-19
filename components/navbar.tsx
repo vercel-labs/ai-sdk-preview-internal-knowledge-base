@@ -16,7 +16,7 @@ export const Navbar = async () => {
 
       {session ? (
         <div className="group py-1 px-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer relative">
-          <div className="text-sm dark:text-zinc-400 z-0">
+          <div className="text-sm dark:text-zinc-400 z-10">
             {session.user?.email}
           </div>
           <div className="flex-col absolute top-6 right-0 w-full pt-5 group-hover:flex hidden">
