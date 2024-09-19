@@ -2,6 +2,7 @@ import { Navbar } from "@/components/navbar";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { KasadaClient } from "@/utils/kasada/kasada-client";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   ),
   title: "Internal Knowledge Base",
   description:
-    "Internal Knowledge Base using Retrieval Augmented Generation and Middleware",
+    "Preview of internal knowledge base using retrieval augmented generation and middleware from the AI SDK",
 };
 
 export default function RootLayout({
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <KasadaClient />
         <Toaster position="top-center" />
         <Navbar />
         {children}
