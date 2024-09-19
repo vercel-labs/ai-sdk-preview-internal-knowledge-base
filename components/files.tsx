@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import {
   CheckedSquare,
+  InfoIcon,
   LoaderIcon,
   TrashIcon,
   UncheckedSquare,
@@ -26,7 +27,11 @@ export const Files = ({
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
   const [deleteQueue, setDeleteQueue] = useState<Array<string>>([]);
-  const { data: files, mutate } = useSWR("api/files/list", fetcher, {
+  const {
+    data: files,
+    mutate,
+    isLoading,
+  } = useSWR("api/files/list", fetcher, {
     fallbackData: [],
   });
 
@@ -104,6 +109,24 @@ export const Files = ({
         </div>
 
         <div className="flex flex-col h-full overflow-y-scroll">
+          {isLoading ? (
+            <div className="flex flex-col gap-6 pt-3 pl-2 absolute">
+              <div className="w-44 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+              <div className="w-32 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+              <div className="w-28 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+              <div className="w-52 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+            </div>
+          ) : null}
+
+          {!isLoading && files.length === 0 ? (
+            <div className="flex flex-col gap-4 items-center justify-center h-full">
+              <div className="flex flex-row gap-2 items-center text-zinc-500 dark:text-zinc-400 text-sm">
+                <InfoIcon />
+                <div>No files found</div>
+              </div>
+            </div>
+          ) : null}
+
           {files.map((file: any) => (
             <div
               key={file.pathname}

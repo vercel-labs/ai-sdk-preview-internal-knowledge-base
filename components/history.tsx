@@ -14,13 +14,13 @@ export const History = () => {
   const { id } = useParams();
 
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-  const { data: history, error } = useSWR<Array<Chat>>(
-    "/api/history",
-    fetcher,
-    {
-      fallbackData: [],
-    },
-  );
+  const {
+    data: history,
+    error,
+    isLoading,
+  } = useSWR<Array<Chat>>("/api/history", fetcher, {
+    fallbackData: [],
+  });
 
   return (
     <>
@@ -74,6 +74,22 @@ export const History = () => {
                   <div className="text-zinc-500 h-dvh w-full flex flex-row justify-center items-center text-sm gap-2">
                     <InfoIcon />
                     <div>Login to save and revisit previous chats!</div>
+                  </div>
+                ) : null}
+
+                {!isLoading && history?.length === 0 ? (
+                  <div className="text-zinc-500 h-dvh w-full flex flex-row justify-center items-center text-sm gap-2">
+                    <InfoIcon />
+                    <div>No chats found</div>
+                  </div>
+                ) : null}
+
+                {isLoading ? (
+                  <div className="flex flex-col gap-5 pt-3 pl-2">
+                    <div className="w-44 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+                    <div className="w-32 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+                    <div className="w-28 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+                    <div className="w-52 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
                   </div>
                 ) : null}
 
