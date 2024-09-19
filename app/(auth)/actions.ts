@@ -45,5 +45,7 @@ export const register = async (
       password,
       redirect: true,
     });
+
+    return { status: "success" } as RegisterActionState;
   }
 };
