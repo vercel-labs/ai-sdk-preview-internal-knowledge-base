@@ -27,8 +27,8 @@ dependencies:
     specifier: ^2.0.0
     version: 2.0.0
   ai:
-    specifier: ^3.3.33
-    version: 3.3.33(react@19.0.0-rc-7771d3a7-20240827)(svelte@4.2.18)(vue@3.4.35)(zod@3.23.8)
+    specifier: 3.3.41
+    version: 3.3.41(react@19.0.0-rc-7771d3a7-20240827)(svelte@4.2.18)(vue@3.4.35)(zod@3.23.8)
   bcrypt-ts:
     specifier: ^5.0.2
     version: 5.0.2
@@ -161,8 +161,8 @@ packages:
       json-schema: 0.4.0
     dev: false
 
-  /@ai-sdk/react@0.0.55(react@19.0.0-rc-7771d3a7-20240827)(zod@3.23.8):
-    resolution: {integrity: sha512-9fUUEEEoH01M6ZhvyZ/2v0DI6tiYnSldBg6RaKoy+qx2tSeKvOpFNZhT/iOvQ7oqAyyp0Ocg5Rj7L/jcLXSMxw==}
+  /@ai-sdk/react@0.0.59(react@19.0.0-rc-7771d3a7-20240827)(zod@3.23.8):
+    resolution: {integrity: sha512-1WbgO3J2/OoheMuNMxy5itJ3NVqOpqpAQxFNp7AoXgnDv4wDF4kTif61rTlKh7dCPvBHj2HXLmob+TrVFaWhYw==}
     engines: {node: '>=18'}
     peerDependencies:
       react: ^18 || ^19
@@ -173,8 +173,8 @@ packages:
       zod:
         optional: true
     dependencies:
-      '@ai-sdk/provider-utils': 1.0.18(zod@3.23.8)
-      '@ai-sdk/ui-utils': 0.0.41(zod@3.23.8)
+      '@ai-sdk/provider-utils': 1.0.19(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.44(zod@3.23.8)
       react: 19.0.0-rc-7771d3a7-20240827
       swr: 2.2.5(react@19.0.0-rc-7771d3a7-20240827)
       zod: 3.23.8
@@ -1547,8 +1547,8 @@ packages:
       humanize-ms: 1.2.1
     dev: false
 
-  /ai@3.3.33(react@19.0.0-rc-7771d3a7-20240827)(svelte@4.2.18)(vue@3.4.35)(zod@3.23.8):
-    resolution: {integrity: sha512-qyYMebaySFF5jnaBfsxXcbjJtAmM3c9VP9r8RgBSGap7K+X/KrdFw1zJ3zad81MbGF6uG2tdNn/kw4k/muxX5w==}
+  /ai@3.3.41(react@19.0.0-rc-7771d3a7-20240827)(svelte@4.2.18)(vue@3.4.35)(zod@3.23.8):
+    resolution: {integrity: sha512-unWUqw0hnZo0irhdedTv8ef7IEiySBCO3zjPxx1/k0kI1G0whKYq8l83k/LzqShLekc2Qg3gyyhdEO+39ptegw==}
     engines: {node: '>=18'}
     peerDependencies:
       openai: ^4.42.0
@@ -1569,12 +1569,12 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 0.0.23
-      '@ai-sdk/provider-utils': 1.0.18(zod@3.23.8)
-      '@ai-sdk/react': 0.0.55(react@19.0.0-rc-7771d3a7-20240827)(zod@3.23.8)
-      '@ai-sdk/solid': 0.0.44(zod@3.23.8)
-      '@ai-sdk/svelte': 0.0.46(svelte@4.2.18)(zod@3.23.8)
-      '@ai-sdk/ui-utils': 0.0.41(zod@3.23.8)
-      '@ai-sdk/vue': 0.0.46(vue@3.4.35)(zod@3.23.8)
+      '@ai-sdk/provider-utils': 1.0.19(zod@3.23.8)
+      '@ai-sdk/react': 0.0.59(react@19.0.0-rc-7771d3a7-20240827)(zod@3.23.8)
+      '@ai-sdk/solid': 0.0.47(zod@3.23.8)
+      '@ai-sdk/svelte': 0.0.49(svelte@4.2.18)(zod@3.23.8)
+      '@ai-sdk/ui-utils': 0.0.44(zod@3.23.8)
+      '@ai-sdk/vue': 0.0.50(vue@3.4.35)(zod@3.23.8)
       '@opentelemetry/api': 1.9.0
       eventsource-parser: 1.1.2
       json-schema: 0.4.0
