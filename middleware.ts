@@ -1,8 +1,8 @@
 import { kv } from "@vercel/kv";
 import NextAuth from "next-auth";
-import { authConfig } from "@/app/auth.config";
 import { NextFetchEvent, NextRequest } from "next/server";
 import { kasadaHandler } from "./utils/kasada/kasada-server";
+import { authConfig } from "@/app/(auth)/auth.config";
 
 const MAX_REQUESTS = 25;
 

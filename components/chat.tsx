@@ -82,9 +82,9 @@ export function Chat({
           ref={messagesContainerRef}
           className="flex flex-col gap-4 h-full w-dvw items-center overflow-y-scroll"
         >
-          {messages.map((message) => (
+          {messages.map((message, index) => (
             <PreviewMessage
-              key={message.id}
+              key={`${id}-${index}`}
               role={message.role}
               content={message.content}
             />

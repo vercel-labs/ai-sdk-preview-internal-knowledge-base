@@ -2,25 +2,31 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { InfoIcon, MenuIcon, PencilEditIcon } from "./icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import cx from "classnames";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { Chat } from "@/schema";
 import { fetcher } from "@/utils/functions";
 
 export const History = () => {
   const { id } = useParams();
+  const pathname = usePathname();
 
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const {
     data: history,
     error,
     isLoading,
+    mutate,
   } = useSWR<Array<Chat>>("/api/history", fetcher, {
     fallbackData: [],
   });
+
+  useEffect(() => {
+    mutate();
+  }, [pathname, mutate]);
 
   return (
     <>
@@ -64,6 +70,9 @@ export const History = () => {
                 <Link
                   href="/"
                   className="dark:text-zinc-400 dark:bg-zinc-700 hover:dark:bg-zinc-600 bg-zinc-100 hover:bg-zinc-200 p-1.5 rounded-md cursor-pointer"
+                  onClick={() => {
+                    setIsHistoryVisible(false);
+                  }}
                 >
                   <PencilEditIcon size={14} />
                 </Link>
@@ -84,12 +93,18 @@ export const History = () => {
                   </div>
                 ) : null}
 
-                {isLoading ? (
-                  <div className="flex flex-col gap-5 pt-3 pl-2">
-                    <div className="w-44 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
-                    <div className="w-32 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
-                    <div className="w-28 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
-                    <div className="w-52 h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+                {isLoading && !error ? (
+                  <div className="flex flex-col w-full">
+                    {[44, 32, 28, 52].map((item) => (
+                      <div
+                        key={item}
+                        className="p-2 border-b dark:border-zinc-700"
+                      >
+                        <div
+                          className={`w-${item} h-[20px] bg-zinc-200 dark:bg-zinc-600 animate-pulse`}
+                        />
+                      </div>
+                    ))}
                   </div>
                 ) : null}
 

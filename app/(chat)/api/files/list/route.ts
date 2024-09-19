@@ -1,4 +1,4 @@
-import { auth } from "@/app/auth";
+import { auth } from "@/app/(auth)/auth";
 import { list } from "@vercel/blob";
 
 export async function GET() {

@@ -1,7 +1,7 @@
 "use server";
 
-import { signIn } from "../auth";
 import { createUser, getUser } from "../db";
+import { signIn } from "./auth";
 
 export interface LoginActionState {
   status: "idle" | "in_progress" | "success" | "failed";
