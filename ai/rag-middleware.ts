@@ -76,7 +76,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       ...chunk,
       similarity: cosineSimilarity(
         hypotheticalAnswerEmbedding,
-        chunk.embedding
+        chunk.embedding,
       ),
     }));
 

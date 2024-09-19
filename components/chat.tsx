@@ -32,7 +32,7 @@ export function Chat({
   const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
   >([]);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isFilesVisible, setIsFilesVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -79,9 +79,9 @@ export function Chat({
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-2 w-full px-4 md:px-0 mx-auto md:max-w-[500px]">
-          {messages.length === 0 &&
-            suggestedActions.map((suggestedAction, index) => (
+        {messages.length === 0 && (
+          <div className="grid sm:grid-cols-2 gap-2 w-full px-4 md:px-0 mx-auto md:max-w-[500px]">
+            {suggestedActions.map((suggestedAction, index) => (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -105,7 +105,8 @@ export function Chat({
                 </button>
               </motion.div>
             ))}
-        </div>
+          </div>
+        )}
 
         <form
           className="flex flex-row gap-2 relative items-center w-full md:max-w-[500px] max-w-[calc(100dvw-32px) px-4 md:px-0"
@@ -123,7 +124,7 @@ export function Chat({
           <div
             className="relative text-sm bg-zinc-100 rounded-lg size-9 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer hover:bg-zinc-200 dark:text-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-800"
             onClick={() => {
-              setIsDropdownVisible(!isDropdownVisible);
+              setIsFilesVisible(!isFilesVisible);
             }}
           >
             <FileIcon />
@@ -140,24 +141,12 @@ export function Chat({
       </div>
 
       <AnimatePresence>
-        {isDropdownVisible && (
-          <>
-            <motion.div
-              className="fixed bg-zinc-900/50 h-dvh w-dvw top-0 left-0 z-30"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                setIsDropdownVisible(false);
-              }}
-            />
-
-            <Files
-              setIsDropdownVisible={setIsDropdownVisible}
-              selectedFilePathnames={selectedFilePathnames}
-              setSelectedFilePathnames={setSelectedFilePathnames}
-            />
-          </>
+        {isFilesVisible && (
+          <Files
+            setIsFilesVisible={setIsFilesVisible}
+            selectedFilePathnames={selectedFilePathnames}
+            setSelectedFilePathnames={setSelectedFilePathnames}
+          />
         )}
       </AnimatePresence>
     </div>
