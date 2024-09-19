@@ -21,43 +21,43 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     if (!recentMessage || recentMessage.role !== "user") return params;
 
-    const userPromptContent = recentMessage.content
+    const lastUserMessageContent = recentMessage.content
       .filter((content) => content.type === "text")
       .map((content) => content.text)
       .join("\n");
 
     // Classify the user prompt as whether it requires more context or not
-
     const { object: classification } = await generateObject({
       model: openai("gpt-4o"),
       output: "enum",
-      enum: ["info", "no-info"],
-      system:
-        "classify the user prompt as whether it requires more information or not",
-      prompt: userPromptContent,
+      enum: ["question", "statement", "other"],
+      system: "classify the user message as a question, statement, or other",
+      prompt: lastUserMessageContent,
     });
 
-    if (classification !== "info") {
-      prompt.push(recentMessage);
-      return { ...params, prompt };
-    }
+    // only use RAG for questions
+    if (classification !== "question") return params;
 
-    const { text: searchPrompt } = await generateText({
+    // Use hypothetical document embeddings:
+    const { text: hypotheticalAnswer } = await generateText({
       model: openai("gpt-4o"),
-      system:
-        "generate a prompt that you can use to search a corpus of text that uses cosine similarity to find the most relevant chunks of text based on user prompt",
-      prompt: userPromptContent,
+      system: "Answer the users question:",
+      prompt: lastUserMessageContent,
     });
 
-    // Perform retrieval augmented generation
-
-    const { embedding: searchPromptEmbedding } = await embed({
+    // Embed the hypothetical answer
+    const { embedding: hypotheticalAnswerEmbedding } = await embed({
       model: openai.embedding("text-embedding-3-small"),
-      value: searchPrompt,
+      value: hypotheticalAnswer,
     });
 
-    // @ts-expect-error provider metadata is not typed
-    const { files } = providerMetadata;
+    // TODO validate provider metadata with Zod, and return early if it's not valid:
+    // const schema = z.object({
+    //   files: z.object({
+    //     selection: z.array(z.string()),
+    //   }),
+    // });
+    const { files } = providerMetadata as any; // TODO remove any, use Zod
     const { selection }: { selection: Array<string> } = files;
 
     const chunksBySelection = await getChunksByFilePaths({
@@ -67,7 +67,10 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     const chunksWithSimilarity = chunksBySelection
       .map((chunk) => ({
         ...chunk,
-        similarity: cosineSimilarity(searchPromptEmbedding, chunk.embedding),
+        similarity: cosineSimilarity(
+          hypotheticalAnswerEmbedding,
+          chunk.embedding
+        ),
       }))
       .sort((a, b) => b.similarity - a.similarity);
 
