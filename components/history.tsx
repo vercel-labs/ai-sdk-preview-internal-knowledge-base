@@ -77,7 +77,7 @@ export const History = () => {
                   </div>
                 ) : null}
 
-                {!isLoading && history?.length === 0 ? (
+                {!isLoading && history?.length === 0 && !error ? (
                   <div className="text-zinc-500 h-dvh w-full flex flex-row justify-center items-center text-sm gap-2">
                     <InfoIcon />
                     <div>No chats found</div>
@@ -93,22 +93,21 @@ export const History = () => {
                   </div>
                 ) : null}
 
-                {history
-                  ? history.map((chat) => (
-                      <Link
-                        href={`/${chat.id}`}
-                        key={chat.id}
-                        className={cx(
-                          "p-2 dark:text-zinc-400 border-b dark:border-zinc-700 text-sm dark:hover:bg-zinc-700 hover:bg-zinc-200 last-of-type:border-b-0",
-                          {
-                            "dark:bg-zinc-700 bg-zinc-200": id === chat.id,
-                          },
-                        )}
-                      >
-                        {chat.messages[0].content as string}
-                      </Link>
-                    ))
-                  : "Fetching history..."}
+                {history &&
+                  history.map((chat) => (
+                    <Link
+                      href={`/${chat.id}`}
+                      key={chat.id}
+                      className={cx(
+                        "p-2 dark:text-zinc-400 border-b dark:border-zinc-700 text-sm dark:hover:bg-zinc-700 hover:bg-zinc-200 last-of-type:border-b-0",
+                        {
+                          "dark:bg-zinc-700 bg-zinc-200": id === chat.id,
+                        },
+                      )}
+                    >
+                      {chat.messages[0].content as string}
+                    </Link>
+                  ))}
               </div>
             </motion.div>
           </>

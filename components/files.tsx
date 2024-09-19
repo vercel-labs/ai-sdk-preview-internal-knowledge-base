@@ -118,7 +118,10 @@ export const Files = ({
             </div>
           ) : null}
 
-          {!isLoading && files.length === 0 ? (
+          {!isLoading &&
+          files.length === 0 &&
+          uploadQueue.length === 0 &&
+          deleteQueue.length === 0 ? (
             <div className="flex flex-col gap-4 items-center justify-center h-full">
               <div className="flex flex-row gap-2 items-center text-zinc-500 dark:text-zinc-400 text-sm">
                 <InfoIcon />

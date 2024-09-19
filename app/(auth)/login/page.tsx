@@ -6,7 +6,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { useActionState, useEffect } from "react";
 import { login, LoginActionState } from "../actions";
 import { toast } from "sonner";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
