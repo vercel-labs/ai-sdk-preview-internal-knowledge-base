@@ -9,9 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai": "0.0.60",
-    "@langchain/core": "^0.2.32",
-    "@langchain/openai": "^0.2.10",
+    "@ai-sdk/openai": "^0.0.60",
     "@langchain/textsplitters": "^0.0.3",
     "@vercel/analytics": "^1.3.1",
     "@vercel/blob": "^0.24.0",
@@ -24,7 +22,6 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "framer-motion": "^11.3.19",
-    "langchain": "^0.2.18",
     "next": "15.0.0-canary.152",
     "next-auth": "5.0.0-beta.21",
     "pdf-parse": "^1.1.1",

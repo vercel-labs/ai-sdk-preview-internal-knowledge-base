@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { MenuIcon, PencilEditIcon } from "./icons";
+import { InfoIcon, MenuIcon, PencilEditIcon } from "./icons";
 import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
@@ -14,9 +14,13 @@ export const History = () => {
   const { id } = useParams();
 
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-  const { data: history } = useSWR<Array<Chat>>("/api/history", fetcher, {
-    fallbackData: [],
-  });
+  const { data: history, error } = useSWR<Array<Chat>>(
+    "/api/history",
+    fetcher,
+    {
+      fallbackData: [],
+    },
+  );
 
   return (
     <>
@@ -66,6 +70,13 @@ export const History = () => {
               </div>
 
               <div className="flex flex-col overflow-y-scroll">
+                {error && error.status === 401 ? (
+                  <div className="text-zinc-500 h-dvh w-full flex flex-row justify-center items-center text-sm gap-2">
+                    <InfoIcon />
+                    <div>Login to save and revisit previous chats!</div>
+                  </div>
+                ) : null}
+
                 {history
                   ? history.map((chat) => (
                       <Link
