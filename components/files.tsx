@@ -45,7 +45,7 @@ export const Files = ({
 
   return (
     <motion.div
-      className="fixed bg-zinc-900/50 h-dvh w-dvw top-0 left-0 z-30 flex flex-row justify-center items-center"
+      className="fixed bg-zinc-900/50 h-dvh w-dvw top-0 left-0 z-40 flex flex-row justify-center items-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -56,9 +56,17 @@ export const Files = ({
           { "w-dvw h-96 bottom-0 right-0": !isDesktop },
           { "w-[600px] h-96 rounded-lg": isDesktop },
         )}
-        initial={{ y: "100%", scale: 0.9, opacity: 0 }}
+        initial={{
+          y: "100%",
+          scale: isDesktop ? 0.9 : 1,
+          opacity: isDesktop ? 0 : 1,
+        }}
         animate={{ y: "0%", scale: 1, opacity: 1 }}
-        exit={{ y: "100%", scale: 0.9, opacity: 0 }}
+        exit={{
+          y: "100%",
+          scale: isDesktop ? 0.9 : 1,
+          opacity: isDesktop ? 0 : 1,
+        }}
         transition={{ type: "spring", stiffness: 400, damping: 40 }}
         ref={drawerRef}
       >

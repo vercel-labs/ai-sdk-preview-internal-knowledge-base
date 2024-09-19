@@ -2,25 +2,31 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { InfoIcon, MenuIcon, PencilEditIcon } from "./icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import cx from "classnames";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { Chat } from "@/schema";
 import { fetcher } from "@/utils/functions";
 
 export const History = () => {
   const { id } = useParams();
+  const pathname = usePathname();
 
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const {
     data: history,
     error,
     isLoading,
+    mutate,
   } = useSWR<Array<Chat>>("/api/history", fetcher, {
     fallbackData: [],
   });
+
+  useEffect(() => {
+    mutate();
+  }, [pathname, mutate]);
 
   return (
     <>
@@ -87,7 +93,7 @@ export const History = () => {
                   </div>
                 ) : null}
 
-                {isLoading ? (
+                {isLoading && !error ? (
                   <div className="flex flex-col w-full">
                     {[44, 32, 28, 52].map((item) => (
                       <div
