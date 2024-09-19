@@ -76,3 +76,11 @@ export async function getChunksByFilePaths({
     .from(chunk)
     .where(inArray(chunk.filePath, filePaths));
 }
+
+export async function deleteChunksByFilePath({
+  filePath,
+}: {
+  filePath: string;
+}) {
+  return await db.delete(chunk).where(eq(chunk.filePath, filePath));
+}

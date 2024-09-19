@@ -1,4 +1,5 @@
 import { auth } from "@/app/auth";
+import { deleteChunksByFilePath } from "@/app/db";
 import { head, del } from "@vercel/blob";
 
 export async function DELETE(request: Request) {
@@ -33,6 +34,7 @@ export async function DELETE(request: Request) {
   }
 
   await del(fileurl);
+  await deleteChunksByFilePath({ filePath: pathname });
 
   return Response.json({});
 }
