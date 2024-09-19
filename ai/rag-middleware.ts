@@ -74,19 +74,16 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     const k = 10;
     const topKChunks = chunksWithSimilarity.slice(0, k);
 
-    // @ts-expect-error todo: will need to expose this type
-    const recentMessageWithChunks: LanguageModelV1Message = {
+    prompt.push({
       role: "user",
       content: [
         ...recentMessage.content,
         ...topKChunks.map((chunk) => ({
-          type: "text",
+          type: "text" as const,
           text: chunk.content,
         })),
       ],
-    };
-
-    prompt.push(recentMessageWithChunks);
+    });
 
     return {
       ...params,
