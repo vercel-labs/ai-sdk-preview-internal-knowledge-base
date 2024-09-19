@@ -9,6 +9,7 @@ import { FileIcon } from "@/components/icons";
 import { Message as PreviewMessage } from "@/components/message";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
 import { Session } from "next-auth";
+import { Deploy } from "./deploy";
 
 const suggestedActions = [
   {
@@ -164,6 +165,8 @@ export function Chat({
           />
         )}
       </AnimatePresence>
+
+      <Deploy />
     </div>
   );
 }
