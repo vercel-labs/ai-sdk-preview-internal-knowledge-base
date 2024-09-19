@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { signIn } from "../auth";
 import { createUser, getUser } from "../db";
 
@@ -41,6 +40,10 @@ export const register = async (
     return { status: "user_exists" } as RegisterActionState;
   } else {
     await createUser(email, password);
-    redirect("/login");
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: true,
+    });
   }
 };
