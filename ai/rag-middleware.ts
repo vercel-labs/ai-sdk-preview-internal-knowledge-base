@@ -8,16 +8,31 @@ import {
   generateObject,
   generateText,
 } from "ai";
+import { z } from "zod";
+
+// schema for validating the custom provider metadata
+const selectionSchema = z.object({
+  files: z.object({
+    selection: z.array(z.string()),
+  }),
+});
 
 export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
     const session = await auth();
 
-    if (!session) return params;
+    if (!session) return params; // no user session
 
-    const { prompt, providerMetadata } = params;
+    const { prompt: messages, providerMetadata } = params;
 
-    const recentMessage = prompt.pop();
+    // validate the provider metadata with Zod:
+    const { success, data } = selectionSchema.safeParse(providerMetadata);
+
+    if (!success) return params; // no files selected
+
+    const selection = data.files.selection;
+
+    const recentMessage = messages.pop();
 
     if (!recentMessage || recentMessage.role !== "user") return params;
 
@@ -35,12 +50,11 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       prompt: lastUserMessageContent,
     });
 
-    // only use RAG for questions
-    if (classification !== "question") return params;
+    if (classification !== "question") return params; // only use RAG for questions
 
     // Use hypothetical document embeddings:
     const { text: hypotheticalAnswer } = await generateText({
-      model: openai("gpt-4o"),
+      model: openai("gpt-4o-mini"), // fast model for generating hypothetical answer
       system: "Answer the users question:",
       prompt: lastUserMessageContent,
     });
@@ -51,36 +65,33 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       value: hypotheticalAnswer,
     });
 
-    // TODO validate provider metadata with Zod, and return early if it's not valid:
-    // const schema = z.object({
-    //   files: z.object({
-    //     selection: z.array(z.string()),
-    //   }),
-    // });
-    const { files } = providerMetadata as any; // TODO remove any, use Zod
-    const { selection }: { selection: Array<string> } = files;
-
+    // find relevant chunks based on the selection
     const chunksBySelection = await getChunksByFilePaths({
       filePaths: selection.map((path) => `${session.user?.email}/${path}`),
     });
 
-    const chunksWithSimilarity = chunksBySelection
-      .map((chunk) => ({
-        ...chunk,
-        similarity: cosineSimilarity(
-          hypotheticalAnswerEmbedding,
-          chunk.embedding
-        ),
-      }))
-      .sort((a, b) => b.similarity - a.similarity);
+    const chunksWithSimilarity = chunksBySelection.map((chunk) => ({
+      ...chunk,
+      similarity: cosineSimilarity(
+        hypotheticalAnswerEmbedding,
+        chunk.embedding
+      ),
+    }));
 
+    // rank the chunks by similarity and take the top K
+    chunksWithSimilarity.sort((a, b) => b.similarity - a.similarity);
     const k = 10;
     const topKChunks = chunksWithSimilarity.slice(0, k);
 
-    prompt.push({
+    // add the chunks to the last user message
+    messages.push({
       role: "user",
       content: [
         ...recentMessage.content,
+        {
+          type: "text",
+          text: "Here is some relevant information that you can use to answer the question:",
+        },
         ...topKChunks.map((chunk) => ({
           type: "text" as const,
           text: chunk.content,
@@ -88,9 +99,6 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       ],
     });
 
-    return {
-      ...params,
-      prompt,
-    };
+    return { ...params, prompt: messages };
   },
 };
