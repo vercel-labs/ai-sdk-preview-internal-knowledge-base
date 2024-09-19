@@ -1,5 +1,5 @@
 import { customModel } from "@/ai";
-import { auth } from "@/app/auth";
+import { auth } from "@/app/(auth)/auth";
 import { createMessage } from "@/app/db";
 import { convertToCoreMessages, streamText } from "ai";
 

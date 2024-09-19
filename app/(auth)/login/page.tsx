@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Form } from "@/app/form";
+import { Form } from "@/components/form";
 import { SubmitButton } from "@/components/submit-button";
 import { useActionState, useEffect } from "react";
 import { login, LoginActionState } from "../actions";

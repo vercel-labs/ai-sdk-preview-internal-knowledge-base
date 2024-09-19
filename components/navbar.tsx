@@ -1,4 +1,4 @@
-import { auth, signOut } from "@/app/auth";
+import { auth, signOut } from "@/app/(auth)/auth";
 import Link from "next/link";
 import { History } from "./history";
 
