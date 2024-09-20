@@ -100,7 +100,7 @@ export const Files = ({
                   currentQueue.filter((filename) => filename !== file.name),
                 );
 
-                mutate();
+                mutate([...files, { pathname: file.name }]);
               }
             }}
           />
@@ -214,7 +214,7 @@ export const Files = ({
                     currentSelections.filter((path) => path !== file.pathname),
                   );
 
-                  mutate();
+                  mutate(files.filter((f) => f.pathname !== file.pathname));
                 }}
               >
                 <TrashIcon />
@@ -225,7 +225,7 @@ export const Files = ({
           {uploadQueue.map((fileName) => (
             <div
               key={fileName}
-              className="flex flex-row justify-between p-1.5 px-2 gap-4 items-center"
+              className="flex flex-row justify-between p-2 gap-4 items-center"
             >
               <div className="text-zinc-500">
                 <div className="animate-spin">
@@ -238,6 +238,8 @@ export const Files = ({
                   {fileName}
                 </div>
               </div>
+
+              <div className="h-[24px] w-2" />
             </div>
           ))}
         </div>
