@@ -74,7 +74,10 @@ export function Chat({
       setSelectedFilePathnames(
         JSON.parse(
           localStorage.getItem(`guest/selected-file-pathnames`) ||
-            JSON.stringify(["attention is all you need.pdf"]),
+            JSON.stringify([
+              "attention is all you need.pdf",
+              "lets verify step by step.pdf",
+            ]),
         ),
       );
     }
