@@ -1,25 +1,25 @@
-# Provider Registry Preview
+# Internal Knowledge Base Preview
 
-This example demonstrates how to use the [Vercel AI SDK](https://sdk.vercel.ai/docs) with [Next.js](https://nextjs.org/) and the `experimental_createProviderRegistry` function to handle multiple providers and models and switch between them easily in your application.
+This template demonstrates the usage of the [Language Model Middleware](https://sdk.vercel.ai/docs/ai-sdk-core/middleware#language-model-middleware) to perform retrieval augmented generation and enforce guardrails using the [AI SDK](https://sdk.vercel.ai/docs) and [Next.js](https://nextjs.org/).
 
 ## Deploy your own
 
-[![Deploy with Vercel](https://vercel.com/button)](https%3A%2F%2Fvercel.com%2Fnew%2Fclone%3Frepository-url%3Dhttps%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-provider-registry%26env%3DOPENAI_API_KEY%2CANTHROPIC_API_KEY%2CGOOGLE_GENERATIVE_AI_API_KEY%26envDescription%3DAPI%20keys%20needed%20for%20application)
+[![Deploy with Vercel](https://vercel.com/button)](https%3A%2F%2Fvercel.com%2Fnew%2Fclone%3Frepository-url%3Dhttps%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-internal-knowledge-base%26env%3DOPENAI_API_KEY&envDescription%3DAPI%20keys%20needed%20for%20application)
 
 ## How to use
 
 Run [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
 
 ```bash
-npx create-next-app --example https://github.com/vercel-labs/ai-sdk-preview-provider-registry ai-sdk-preview-provider-registry-example
+npx create-next-app --example https://github.com/vercel-labs/ai-sdk-preview-internal-knowledge-base ai-sdk-preview-internal-knowledge-base-example
 ```
 
 ```bash
-yarn create next-app --example https://github.com/vercel-labs/ai-sdk-preview-provider-registry ai-sdk-preview-provider-registry-example
+yarn create next-app --example https://github.com/vercel-labs/ai-sdk-preview-internal-knowledge-base ai-sdk-preview-internal-knowledge-base-example
 ```
 
 ```bash
-pnpm create next-app --example https://github.com/vercel-labs/ai-sdk-preview-provider-registry ai-sdk-preview-provider-registry-example
+pnpm create next-app --example https://github.com/vercel-labs/ai-sdk-preview-internal-knowledge-base ai-sdk-preview-internal-knowledge-base-example
 ```
 
 To run the example locally you need to:
@@ -33,8 +33,7 @@ To run the example locally you need to:
 
 ## Learn More
 
-To learn more about Vercel AI SDK or Next.js take a look at the following resources:
+To learn more about the AI SDK or Next.js by Vercel, take a look at the following resources:
 
-- [Vercel AI SDK docs](https://sdk.vercel.ai/docs)
-- [Vercel AI Playground](https://play.vercel.ai)
+- [AI SDK Documentation](https://sdk.vercel.ai/docs)
 - [Next.js Documentation](https://nextjs.org/docs)
