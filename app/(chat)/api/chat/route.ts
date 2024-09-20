@@ -14,7 +14,8 @@ export async function POST(request: Request) {
 
   const result = await streamText({
     model: customModel,
-    system: "you are a friendly assistant!",
+    system:
+      "you are a friendly assistant! keep your responses concise and helpful.",
     messages: convertToCoreMessages(messages),
     experimental_providerMetadata: {
       files: {
