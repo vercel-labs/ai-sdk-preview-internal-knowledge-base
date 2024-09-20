@@ -4,7 +4,7 @@ This template demonstrates the usage of the [Language Model Middleware](https://
 
 ## Deploy your own
 
-[![Deploy with Vercel](https://vercel.com/button)](https%3A%2F%2Fvercel.com%2Fnew%2Fclone%3Frepository-url%3Dhttps%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-internal-knowledge-base%26env%3DOPENAI_API_KEY&envDescription%3DAPI%20keys%20needed%20for%20application)
+[![Deploy with Vercel](https://vercel.com/button)](https%3A%2F%2Fvercel.com%2Fnew%2Fclone%3Frepository-url%3Dhttps%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-internal-knowledge-base%26env%3DOPENAI_API_KEY%2CAUTH_SECRET%26envDescription%3DAPI%20keys%20needed%20for%20application%26envLink%3Dhttps%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-internal-knowledge-base%2Fblob%2Fmain%2F.env.example%26stores%3D%5B%7B%22type%22%3A%22blob%22%7D%2C%7B%22type%22%3A%22postgres%22%7D%5D)
 
 ## How to use
 
