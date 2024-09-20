@@ -7,7 +7,6 @@ import {
   real,
   timestamp,
   json,
-  integer,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("User", {
