@@ -46,6 +46,13 @@ export function Chat({
         JSON.stringify(selectedFilePathnames),
       );
     }
+
+    if (isMounted !== false && !session) {
+      localStorage.setItem(
+        `guest/selected-file-pathnames`,
+        JSON.stringify(selectedFilePathnames),
+      );
+    }
   }, [selectedFilePathnames, isMounted, session]);
 
   useEffect(() => {
@@ -59,6 +66,15 @@ export function Chat({
           localStorage.getItem(
             `${session.user.email}/selected-file-pathnames`,
           ) || "[]",
+        ),
+      );
+    }
+
+    if (!session) {
+      setSelectedFilePathnames(
+        JSON.parse(
+          localStorage.getItem(`guest/selected-file-pathnames`) ||
+            JSON.stringify(["attention is all you need.pdf"]),
         ),
       );
     }
