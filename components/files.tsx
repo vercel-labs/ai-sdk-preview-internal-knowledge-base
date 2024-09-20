@@ -31,7 +31,11 @@ export const Files = ({
     data: files,
     mutate,
     isLoading,
-  } = useSWR("api/files/list", fetcher, {
+  } = useSWR<
+    Array<{
+      pathname: string;
+    }>
+  >("api/files/list", fetcher, {
     fallbackData: [],
   });
 
@@ -100,7 +104,7 @@ export const Files = ({
                   currentQueue.filter((filename) => filename !== file.name),
                 );
 
-                mutate([...files, { pathname: file.name }]);
+                mutate([...(files || []), { pathname: file.name }]);
               }
             }}
           />
@@ -135,7 +139,7 @@ export const Files = ({
           ) : null}
 
           {!isLoading &&
-          files.length === 0 &&
+          files?.length === 0 &&
           uploadQueue.length === 0 &&
           deleteQueue.length === 0 ? (
             <div className="flex flex-col gap-4 items-center justify-center h-full">
@@ -146,7 +150,7 @@ export const Files = ({
             </div>
           ) : null}
 
-          {files.map((file: any) => (
+          {files?.map((file: any) => (
             <div
               key={file.pathname}
               className={`flex flex-row gap-4 items-center p-2 border-b dark:border-zinc-700 ${
@@ -246,7 +250,7 @@ export const Files = ({
 
         <div className="flex flex-row justify-end">
           <div className="text-zinc-500 dark:text-zinc-400 text-sm">
-            {`${selectedFilePathnames.length}/${files.length}`} Selected
+            {`${selectedFilePathnames.length}/${files?.length}`} Selected
           </div>
         </div>
       </motion.div>

@@ -43,7 +43,7 @@ export const register = async (
     await signIn("credentials", {
       email,
       password,
-      redirect: true,
+      redirect: false,
     });
     return { status: "success" } as RegisterActionState;
   }

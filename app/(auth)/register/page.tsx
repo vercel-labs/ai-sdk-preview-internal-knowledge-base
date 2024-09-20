@@ -6,8 +6,10 @@ import { SubmitButton } from "@/components/submit-button";
 import { register, RegisterActionState } from "../actions";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const [state, formAction] = useActionState<RegisterActionState, FormData>(
     register,
     {
@@ -17,13 +19,14 @@ export default function Page() {
 
   useEffect(() => {
     if (state.status === "user_exists") {
-      toast.error("User already exists");
+      toast.error("Account already exists");
     } else if (state.status === "failed") {
       toast.error("Failed to create account");
     } else if (state.status === "success") {
       toast.success("Account created successfully");
+      router.refresh();
     }
-  }, [state.status]);
+  }, [state, router]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-white dark:bg-zinc-900">
