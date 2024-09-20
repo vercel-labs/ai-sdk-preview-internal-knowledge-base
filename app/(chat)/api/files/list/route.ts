@@ -5,7 +5,16 @@ export async function GET() {
   let session = await auth();
 
   if (!session) {
-    return Response.redirect("/login");
+    const { blobs } = await list({ prefix: "guest@vercel.com" });
+
+    return Response.json(
+      blobs
+        .map((blob) => ({
+          ...blob,
+          pathname: blob.pathname.replace(`guest@vercel.com/`, ""),
+        }))
+        .filter((blob) => blob.pathname !== ""),
+    );
   }
 
   const { user } = session;

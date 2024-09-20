@@ -8,10 +8,6 @@ export async function POST(request: Request) {
 
   const session = await auth();
 
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
   const result = await streamText({
     model: customModel,
     system:
@@ -23,11 +19,13 @@ export async function POST(request: Request) {
       },
     },
     onFinish: async ({ text }) => {
-      await createMessage({
-        id,
-        messages: [...messages, { role: "assistant", content: text }],
-        author: session.user?.email!,
-      });
+      if (session) {
+        await createMessage({
+          id,
+          messages: [...messages, { role: "assistant", content: text }],
+          author: session.user?.email!,
+        });
+      }
     },
     experimental_telemetry: {
       isEnabled: true,

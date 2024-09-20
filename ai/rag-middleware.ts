@@ -21,7 +21,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
     const session = await auth();
 
-    if (!session) return params; // no user session
+    // if (!session) return params; // no user session
 
     const { prompt: messages, providerMetadata } = params;
 
@@ -69,7 +69,10 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     // find relevant chunks based on the selection
     const chunksBySelection = await getChunksByFilePaths({
-      filePaths: selection.map((path) => `${session.user?.email}/${path}`),
+      filePaths: selection.map(
+        (path) =>
+          `${session ? session.user?.email : "guest@vercel.com"}/${path}`,
+      ),
     });
 
     const chunksWithSimilarity = chunksBySelection.map((chunk) => ({

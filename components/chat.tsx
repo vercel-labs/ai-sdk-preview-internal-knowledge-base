@@ -68,7 +68,9 @@ export function Chat({
     body: { id, selectedFilePathnames },
     initialMessages,
     onFinish: () => {
-      window.history.replaceState({}, "", `/${id}`);
+      if (session) {
+        window.history.replaceState({}, "", `/${id}`);
+      }
     },
   });
 
@@ -162,6 +164,7 @@ export function Chat({
             setIsFilesVisible={setIsFilesVisible}
             selectedFilePathnames={selectedFilePathnames}
             setSelectedFilePathnames={setSelectedFilePathnames}
+            session={session}
           />
         )}
       </AnimatePresence>

@@ -14,15 +14,19 @@ import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { useOnClickOutside, useWindowSize } from "usehooks-ts";
+import { Session } from "next-auth";
+import { toast } from "sonner";
 
 export const Files = ({
   selectedFilePathnames,
   setSelectedFilePathnames,
   setIsFilesVisible,
+  session,
 }: {
   selectedFilePathnames: string[];
   setSelectedFilePathnames: Dispatch<SetStateAction<string[]>>;
   setIsFilesVisible: Dispatch<SetStateAction<boolean>>;
+  session: Session | null;
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
@@ -106,9 +110,15 @@ export const Files = ({
           />
 
           <div
-            className="bg-zinc-900 text-zinc-50 hover:bg-zinc-800 flex flex-row gap-2 items-center dark:text-zinc-800 text-sm dark:bg-zinc-100 rounded-md p-1 px-2 dark:hover:bg-zinc-200 cursor-pointer"
+            className={cx(
+              "bg-zinc-900 text-zinc-50 hover:bg-zinc-800 flex flex-row gap-2 items-center dark:text-zinc-800 text-sm dark:bg-zinc-100 rounded-md p-1 px-2 dark:hover:bg-zinc-200 cursor-pointer",
+            )}
             onClick={() => {
-              inputFileRef.current?.click();
+              if (session) {
+                inputFileRef.current?.click();
+              } else {
+                toast.error("Please login to upload a file");
+              }
             }}
           >
             <UploadIcon />
@@ -195,6 +205,11 @@ export const Files = ({
               <div
                 className="text-zinc-500 hover:bg-red-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 p-1 px-2 cursor-pointer rounded-md"
                 onClick={async () => {
+                  if (!session) {
+                    toast.error("Please login to manage files");
+                    return;
+                  }
+
                   setDeleteQueue((currentQueue) => [
                     ...currentQueue,
                     file.pathname,
