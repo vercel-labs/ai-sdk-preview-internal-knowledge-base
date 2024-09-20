@@ -34,7 +34,13 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     const recentMessage = messages.pop();
 
-    if (!recentMessage || recentMessage.role !== "user") return params;
+    if (!recentMessage || recentMessage.role !== "user") {
+      if (recentMessage) {
+        messages.push(recentMessage);
+      }
+
+      return params;
+    }
 
     const lastUserMessageContent = recentMessage.content
       .filter((content) => content.type === "text")
@@ -51,7 +57,11 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       prompt: lastUserMessageContent,
     });
 
-    if (classification !== "question") return params; // only use RAG for questions
+    // only use RAG for questions
+    if (classification !== "question") {
+      messages.push(recentMessage);
+      return params;
+    }
 
     // Use hypothetical document embeddings:
     const { text: hypotheticalAnswer } = await generateText({
