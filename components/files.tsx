@@ -163,20 +163,14 @@ export const Files = ({
           {files?.map((file: any) => (
             <div
               key={file.pathname}
-              className={`flex flex-row gap-4 items-center p-2 border-b dark:border-zinc-700 ${
+              className={`flex flex-row p-2 border-b dark:border-zinc-700 ${
                 selectedFilePathnames.includes(file.pathname)
                   ? "bg-zinc-100 dark:bg-zinc-700 dark:border-zinc-600"
                   : ""
               }`}
             >
               <div
-                className={cx(
-                  "cursor-pointer",
-                  selectedFilePathnames.includes(file.pathname) &&
-                    !deleteQueue.includes(file.pathname)
-                    ? "text-blue-600 dark:text-zinc-50"
-                    : "text-zinc-500",
-                )}
+                className="flex flex-row items-center justify-between w-full gap-4"
                 onClick={() => {
                   setSelectedFilePathnames((currentSelections) => {
                     if (currentSelections.includes(file.pathname)) {
@@ -189,20 +183,30 @@ export const Files = ({
                   });
                 }}
               >
-                {deleteQueue.includes(file.pathname) ? (
-                  <div className="animate-spin">
-                    <LoaderIcon />
-                  </div>
-                ) : selectedFilePathnames.includes(file.pathname) ? (
-                  <CheckedSquare />
-                ) : (
-                  <UncheckedSquare />
-                )}
-              </div>
+                <div
+                  className={cx(
+                    "cursor-pointer",
+                    selectedFilePathnames.includes(file.pathname) &&
+                      !deleteQueue.includes(file.pathname)
+                      ? "text-blue-600 dark:text-zinc-50"
+                      : "text-zinc-500",
+                  )}
+                >
+                  {deleteQueue.includes(file.pathname) ? (
+                    <div className="animate-spin">
+                      <LoaderIcon />
+                    </div>
+                  ) : selectedFilePathnames.includes(file.pathname) ? (
+                    <CheckedSquare />
+                  ) : (
+                    <UncheckedSquare />
+                  )}
+                </div>
 
-              <div className="flex flex-row justify-between w-full">
-                <div className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {file.pathname}
+                <div className="flex flex-row justify-between w-full">
+                  <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {file.pathname}
+                  </div>
                 </div>
               </div>
 
