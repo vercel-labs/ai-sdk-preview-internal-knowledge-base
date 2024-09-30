@@ -3,8 +3,15 @@ import { auth } from "@/app/(auth)/auth";
 import { Chat as PreviewChat } from "@/components/chat";
 import { getChatById } from "@/drizzle/query/chat";
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const chat = await getChatById({ id: params.id });
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function Page(props: PageProps) {
+  const { id } = await props.params;
+  const chat = await getChatById({ id });
 
   if (!chat) {
     notFound();
