@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { Form } from "@/components/form";
 import { SubmitButton } from "@/components/submit-button";
-import { useActionState, useEffect } from "react";
 import { login, LoginActionState } from "../actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
-
   const [state, formAction] = useActionState<LoginActionState, FormData>(
     login,
     {
@@ -28,7 +27,7 @@ export default function Page() {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-white dark:bg-zinc-900">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
+      <div className="flex w-full max-w-md flex-col gap-12 overflow-hidden rounded-2xl">
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
           <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
           <p className="text-sm text-gray-500 dark:text-zinc-400">
@@ -37,7 +36,7 @@ export default function Page() {
         </div>
         <Form action={formAction}>
           <SubmitButton>Sign in</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
+          <p className="mt-4 text-center text-sm text-gray-600 dark:text-zinc-400">
             {"Don't have an account? "}
             <Link
               href="/register"

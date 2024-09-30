@@ -1,5 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
-import { getChunksByFilePaths } from "@/app/db";
+import { getChunksByFilePaths } from "@/drizzle/query/chunk";
 import { openai } from "@ai-sdk/openai";
 import {
   cosineSimilarity,

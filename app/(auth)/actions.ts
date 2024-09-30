@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser, getUser } from "../db";
+import { createUser, getUser } from "@/drizzle/query/user";
 import { signIn } from "./auth";
 
 export interface LoginActionState {
@@ -18,9 +18,9 @@ export const login = async (
       redirect: false,
     });
 
-    return { status: "success" } as LoginActionState;
+    return { status: "success" };
   } catch {
-    return { status: "failed" } as LoginActionState;
+    return { status: "failed" };
   }
 };
 
@@ -31,13 +31,13 @@ export interface RegisterActionState {
 export const register = async (
   data: RegisterActionState,
   formData: FormData,
-) => {
-  let email = formData.get("email") as string;
-  let password = formData.get("password") as string;
-  let user = await getUser(email);
+): Promise<RegisterActionState> => {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const user = await getUser(email);
 
-  if (user.length > 0) {
-    return { status: "user_exists" } as RegisterActionState;
+  if (user) {
+    return { status: "user_exists" };
   } else {
     await createUser(email, password);
     await signIn("credentials", {
@@ -45,6 +45,6 @@ export const register = async (
       password,
       redirect: false,
     });
-    return { status: "success" } as RegisterActionState;
+    return { status: "success" };
   }
 };

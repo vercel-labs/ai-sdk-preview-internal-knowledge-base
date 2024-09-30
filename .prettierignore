@@ -1,0 +1,5 @@
+.next
+.turbo
+.vercel
+drizzle/migrations
+pnpm-lock.yaml

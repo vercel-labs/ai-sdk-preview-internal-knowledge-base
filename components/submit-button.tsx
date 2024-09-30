@@ -1,7 +1,7 @@
 "use client";
 
-import { LoaderIcon } from "@/components/icons";
 import { useFormStatus } from "react-dom";
+import { LoaderIcon } from "@/components/icons";
 
 export function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
@@ -10,11 +10,11 @@ export function SubmitButton({ children }: { children: React.ReactNode }) {
     <button
       type={pending ? "button" : "submit"}
       aria-disabled={pending}
-      className="relative flex flex-row gap-4 p-2 w-full items-center justify-center rounded-md bg-zinc-900 text-zinc-50 hover:bg-zinc-800 text-sm transition-all focus:outline-none dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+      className="relative flex w-full flex-row items-center justify-center gap-4 rounded-md bg-zinc-900 p-2 text-sm text-zinc-50 transition-all hover:bg-zinc-800 focus:outline-none dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
     >
       {children}
       {pending && (
-        <span className="animate-spin absolute right-4">
+        <span className="absolute right-4 animate-spin">
           <LoaderIcon />
         </span>
       )}

@@ -1,6 +1,12 @@
 "use client";
 
+import type { ListBlobResultBlob } from "@vercel/blob";
+import cx from "classnames";
+import { motion } from "framer-motion";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import useSWR from "swr";
+import { useOnClickOutside, useWindowSize } from "usehooks-ts";
+import { fetcher } from "@/utils/functions";
 import {
   CheckedSquare,
   InfoIcon,
@@ -9,11 +15,8 @@ import {
   UncheckedSquare,
   UploadIcon,
 } from "./icons";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { fetcher } from "@/utils/functions";
-import cx from "classnames";
-import { motion } from "framer-motion";
-import { useOnClickOutside, useWindowSize } from "usehooks-ts";
+
+type FilesListResult = Pick<ListBlobResultBlob, "pathname" | "url">;
 
 export const Files = ({
   selectedFilePathnames,
@@ -31,11 +34,7 @@ export const Files = ({
     data: files,
     mutate,
     isLoading,
-  } = useSWR<
-    Array<{
-      pathname: string;
-    }>
-  >("api/files/list", fetcher, {
+  } = useSWR<FilesListResult[]>("api/files/list", fetcher, {
     fallbackData: [],
   });
 
@@ -49,16 +48,16 @@ export const Files = ({
 
   return (
     <motion.div
-      className="fixed bg-zinc-900/50 h-dvh w-dvw top-0 left-0 z-40 flex flex-row justify-center items-center"
+      className="fixed left-0 top-0 z-40 flex h-dvh w-dvw flex-row items-center justify-center bg-zinc-900/50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <motion.div
         className={cx(
-          "fixed p-4 flex flex-col gap-4 bg-white dark:bg-zinc-800 z-30",
-          { "w-dvw h-96 bottom-0 right-0": !isDesktop },
-          { "w-[600px] h-96 rounded-lg": isDesktop },
+          "fixed z-30 flex flex-col gap-4 bg-white p-4 dark:bg-zinc-800",
+          { "bottom-0 right-0 h-96 w-dvw": !isDesktop },
+          { "h-96 w-[600px] rounded-lg": isDesktop },
         )}
         initial={{
           y: "100%",
@@ -74,8 +73,8 @@ export const Files = ({
         transition={{ type: "spring", stiffness: 400, damping: 40 }}
         ref={drawerRef}
       >
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-sm flex flex-row gap-3">
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row gap-3 text-sm">
             <div className="text-zinc-900 dark:text-zinc-300">
               Manage Knowledge Base
             </div>
@@ -86,7 +85,7 @@ export const Files = ({
             ref={inputFileRef}
             type="file"
             required
-            className="opacity-0 pointer-events-none w-1"
+            className="pointer-events-none w-1 opacity-0"
             accept="application/pdf"
             multiple={false}
             onChange={async (event) => {
@@ -95,22 +94,26 @@ export const Files = ({
               if (file) {
                 setUploadQueue((currentQueue) => [...currentQueue, file.name]);
 
-                await fetch(`/api/files/upload?filename=${file.name}`, {
-                  method: "POST",
-                  body: file,
-                });
+                const response = await fetch(
+                  `/api/files/upload?filename=${file.name}`,
+                  {
+                    method: "POST",
+                    body: file,
+                  },
+                );
+                const newFile = (await response.json()) as FilesListResult;
 
                 setUploadQueue((currentQueue) =>
                   currentQueue.filter((filename) => filename !== file.name),
                 );
 
-                mutate([...(files || []), { pathname: file.name }]);
+                mutate([...(files || []), { ...newFile }]);
               }
             }}
           />
 
           <div
-            className="bg-zinc-900 text-zinc-50 hover:bg-zinc-800 flex flex-row gap-2 items-center dark:text-zinc-800 text-sm dark:bg-zinc-100 rounded-md p-1 px-2 dark:hover:bg-zinc-200 cursor-pointer"
+            className="flex cursor-pointer flex-row items-center gap-2 rounded-md bg-zinc-900 p-1 px-2 text-sm text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-800 dark:hover:bg-zinc-200"
             onClick={() => {
               inputFileRef.current?.click();
             }}
@@ -120,17 +123,17 @@ export const Files = ({
           </div>
         </div>
 
-        <div className="flex flex-col h-full overflow-y-scroll">
+        <div className="flex h-full flex-col overflow-y-scroll">
           {isLoading ? (
             <div className="flex flex-col">
               {[44, 32, 52].map((item) => (
                 <div
                   key={item}
-                  className="flex flex-row gap-4 p-2 border-b dark:border-zinc-700 items-center"
+                  className="flex flex-row items-center gap-4 border-b p-2 dark:border-zinc-700"
                 >
-                  <div className="size-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse" />
+                  <div className="size-4 animate-pulse bg-zinc-200 dark:bg-zinc-600" />
                   <div
-                    className={`w-${item} h-4 bg-zinc-200 dark:bg-zinc-600 animate-pulse`}
+                    className={`w-${item} h-4 animate-pulse bg-zinc-200 dark:bg-zinc-600`}
                   />
                   <div className="h-[24px] w-1" />
                 </div>
@@ -142,25 +145,25 @@ export const Files = ({
           files?.length === 0 &&
           uploadQueue.length === 0 &&
           deleteQueue.length === 0 ? (
-            <div className="flex flex-col gap-4 items-center justify-center h-full">
-              <div className="flex flex-row gap-2 items-center text-zinc-500 dark:text-zinc-400 text-sm">
+            <div className="flex h-full flex-col items-center justify-center gap-4">
+              <div className="flex flex-row items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
                 <InfoIcon />
                 <div>No files found</div>
               </div>
             </div>
           ) : null}
 
-          {files?.map((file: any) => (
+          {files?.map((file) => (
             <div
               key={file.pathname}
-              className={`flex flex-row p-2 border-b dark:border-zinc-700 ${
+              className={`flex flex-row border-b p-2 dark:border-zinc-700 ${
                 selectedFilePathnames.includes(file.pathname)
-                  ? "bg-zinc-100 dark:bg-zinc-700 dark:border-zinc-600"
+                  ? "bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700"
                   : ""
               }`}
             >
               <div
-                className="flex flex-row items-center justify-between w-full gap-4"
+                className="flex w-full flex-row items-center justify-between gap-4"
                 onClick={() => {
                   setSelectedFilePathnames((currentSelections) => {
                     if (currentSelections.includes(file.pathname)) {
@@ -193,7 +196,7 @@ export const Files = ({
                   )}
                 </div>
 
-                <div className="flex flex-row justify-between w-full">
+                <div className="flex w-full flex-row justify-between">
                   <div className="text-sm text-zinc-500 dark:text-zinc-400">
                     {file.pathname}
                   </div>
@@ -201,7 +204,7 @@ export const Files = ({
               </div>
 
               <div
-                className="text-zinc-500 hover:bg-red-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 p-1 px-2 cursor-pointer rounded-md"
+                className="cursor-pointer rounded-md p-1 px-2 text-zinc-500 hover:bg-red-100 hover:text-red-500 dark:text-zinc-500 hover:dark:bg-zinc-700"
                 onClick={async () => {
                   setDeleteQueue((currentQueue) => [
                     ...currentQueue,
@@ -233,7 +236,7 @@ export const Files = ({
           {uploadQueue.map((fileName) => (
             <div
               key={fileName}
-              className="flex flex-row justify-between p-2 gap-4 items-center"
+              className="flex flex-row items-center justify-between gap-4 p-2"
             >
               <div className="text-zinc-500">
                 <div className="animate-spin">
@@ -241,7 +244,7 @@ export const Files = ({
                 </div>
               </div>
 
-              <div className="flex flex-row justify-between w-full">
+              <div className="flex w-full flex-row justify-between">
                 <div className="text-sm text-zinc-400 dark:text-zinc-400">
                   {fileName}
                 </div>
@@ -253,7 +256,7 @@ export const Files = ({
         </div>
 
         <div className="flex flex-row justify-end">
-          <div className="text-zinc-500 dark:text-zinc-400 text-sm">
+          <div className="text-sm text-zinc-500 dark:text-zinc-400">
             {`${selectedFilePathnames.length}/${files?.length}`} Selected
           </div>
         </div>

@@ -1,8 +1,8 @@
 import { auth } from "@/app/(auth)/auth";
-import { getChatsByUser } from "@/app/db";
+import { getChatsByUser } from "@/drizzle/query/chat";
 
 export async function GET() {
-  let session = await auth();
+  const session = await auth();
 
   if (!session || !session.user) {
     return Response.json("Unauthorized!", { status: 401 });

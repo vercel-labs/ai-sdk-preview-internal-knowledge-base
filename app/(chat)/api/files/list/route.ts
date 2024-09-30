@@ -1,8 +1,8 @@
-import { auth } from "@/app/(auth)/auth";
 import { list } from "@vercel/blob";
+import { auth } from "@/app/(auth)/auth";
 
 export async function GET() {
-  let session = await auth();
+  const session = await auth();
 
   if (!session) {
     return Response.redirect("/login");
@@ -18,8 +18,8 @@ export async function GET() {
 
   return Response.json(
     blobs.map((blob) => ({
-      ...blob,
       pathname: blob.pathname.replace(`${user.email}/`, ""),
+      url: blob.url,
     })),
   );
 }
