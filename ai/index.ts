@@ -1,8 +1,8 @@
-import { openai } from "@ai-sdk/openai";
 import { experimental_wrapLanguageModel as wrapLanguageModel } from "ai";
 import { ragMiddleware } from "./rag-middleware";
+import { registry } from "./setup-registry";
 
 export const customModel = wrapLanguageModel({
-  model: openai("gpt-4o"),
+  model: registry.languageModel("openai:gpt-4o"),
   middleware: ragMiddleware,
 });
