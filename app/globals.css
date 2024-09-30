@@ -8,15 +8,6 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@font-face {
-  font-family: "uncut sans";
-  src: url("./uncut-sans.woff2") format("woff2");
-}
-
-* {
-  font-family: "uncut sans", sans-serif;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
