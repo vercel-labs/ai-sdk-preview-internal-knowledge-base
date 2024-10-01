@@ -41,7 +41,8 @@ export const Files = ({
   const { width } = useWindowSize();
   const isDesktop = width > 768;
 
-  const drawerRef = useRef(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  // @ts-expect-error TODO with react@19
   useOnClickOutside([drawerRef], () => {
     setIsFilesVisible(false);
   });
