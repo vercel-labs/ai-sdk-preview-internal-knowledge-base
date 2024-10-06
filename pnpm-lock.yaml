@@ -245,9 +245,11 @@ packages:
 
   '@esbuild-kit/core-utils@3.3.2':
     resolution: {integrity: sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ==}
+    deprecated: 'Merged into tsx: https://tsx.is'
 
   '@esbuild-kit/esm-loader@2.6.5':
     resolution: {integrity: sha512-FxEMIkJKnodyA1OaCUoEvbYRkoZlLZ4d/eXFu9Fh8CbBBgP5EmZxrfTRyN0qpXZ4vOvqnE5YdRdcrmUUXuU+dA==}
+    deprecated: 'Merged into tsx: https://tsx.is'
 
   '@esbuild/aix-ppc64@0.19.12':
     resolution: {integrity: sha512-bmoCYyWdEL3wDQIVbcyzRyeKLgk2WtWLTWz1ZIAZF/EGbNOwSA6ew3PftJ1PqMiOOGu0OyFMzG53L0zqIpPeNA==}
@@ -1722,6 +1724,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -2106,9 +2109,6 @@ packages:
 
   jose@5.9.2:
     resolution: {integrity: sha512-ILI2xx/I57b20sd7rHZvgiiQrmp2mcotwsAH+5ajbpFQbrYVQdNHYlQhoA5cFb78CgtBOxtC05TeA+mcgkuCqQ==}
-
-  js-tiktoken@1.0.14:
-    resolution: {integrity: sha512-Pk3l3WOgM9joguZY2k52+jH82RtABRgB5RdGFZNUGbOKGMVlNmafcPA3b0ITcCZPu1L9UclP1tne6aw7ZI4Myg==}
 
   js-tiktoken@1.0.15:
     resolution: {integrity: sha512-65ruOWWXDEZHHbAo7EjOcNxOGasQKbL4Fq3jEr2xsCqSsoOo6VVSqzWQb6PRIqypFSDcma4jO90YP0w5X8qVXQ==}
@@ -3700,7 +3700,7 @@ snapshots:
   '@langchain/textsplitters@0.1.0(@langchain/core@0.3.7)':
     dependencies:
       '@langchain/core': 0.3.7
-      js-tiktoken: 1.0.14
+      js-tiktoken: 1.0.15
 
   '@neondatabase/serverless@0.9.5':
     dependencies:
@@ -5169,10 +5169,6 @@ snapshots:
   jiti@1.21.6: {}
 
   jose@5.9.2: {}
-
-  js-tiktoken@1.0.14:
-    dependencies:
-      base64-js: 1.5.1
 
   js-tiktoken@1.0.15:
     dependencies:
