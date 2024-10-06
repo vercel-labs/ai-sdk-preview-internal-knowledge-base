@@ -1,4 +1,4 @@
-import { LanguageModelV1Prompt } from "ai";
+import type { LanguageModelV1Prompt } from "ai";
 
 export function getLastUserMessageText({
   prompt,
@@ -13,5 +13,8 @@ export function getLastUserMessageText({
 
   return lastMessage.content.length === 0
     ? undefined
-    : lastMessage.content.filter((c) => c.type === "text").join("\n");
+    : lastMessage.content
+        .filter((c) => c.type === "text")
+        .map((c) => c.text)
+        .join("\n");
 }

@@ -10,6 +10,8 @@ import { z } from "zod";
 import { auth } from "@/app/(auth)/auth";
 import { getChunksByFilePaths } from "@/drizzle/query/chunk";
 import { registry } from "./setup-registry";
+import { getLastUserMessageText } from "./utils/get-last-user-message-text";
+import { addToLastUserMessage } from "./utils/add-to-last-user-message";
 
 // schema for validating the custom provider metadata
 const selectionSchema = z.object({
@@ -22,28 +24,20 @@ export const ragMiddleware: LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
     const session = await auth();
     if (!session) return params; // no user session
-
-    const { prompt: messages, providerMetadata } = params;
     // validate the provider metadata with Zod:
-    const { success, data } = selectionSchema.safeParse(providerMetadata);
+    const { success, data } = selectionSchema.safeParse(
+      params.providerMetadata,
+    );
     if (!success) {
       return params; // no files selected
     }
 
-    const recentMessage = messages.pop();
-    if (!recentMessage) {
+    const lastUserMessageContent = getLastUserMessageText({
+      prompt: params.prompt,
+    });
+    if (!lastUserMessageContent) {
       return params; // no message
     }
-
-    if (recentMessage.role !== "user") {
-      messages.push(recentMessage);
-      return params; // last message did not come from the user
-    }
-
-    const lastUserMessageContent = recentMessage.content
-      .filter((content) => content.type === "text")
-      .map((content) => content.text)
-      .join("\n");
 
     // Classify the user prompt as whether it requires more context or not
     const { object: classification } = await generateObject({
@@ -57,7 +51,6 @@ export const ragMiddleware: LanguageModelV1Middleware = {
 
     // only use RAG for questions
     if (classification !== "question") {
-      messages.push(recentMessage);
       return params;
     }
 
@@ -92,28 +85,19 @@ export const ragMiddleware: LanguageModelV1Middleware = {
 
     // rank the chunks by similarity and take the top K
     chunksWithSimilarity.sort((a, b) => b.similarity - a.similarity);
-    const k = 10;
-    const topKChunks = chunksWithSimilarity.slice(0, k);
+    const topKChunks = chunksWithSimilarity.slice(0, 10);
+    const text: LanguageModelV1TextPart[] = [
+      {
+        type: "text",
+        text: "Here is some relevant information that you can use to answer the question:",
+      },
+      ...topKChunks.map(
+        (chunk) =>
+          ({ type: "text", text: chunk.content }) as LanguageModelV1TextPart,
+      ),
+    ];
 
     // add the chunks to the last user message
-    messages.push({
-      role: "user",
-      content: [
-        ...recentMessage.content,
-        {
-          type: "text",
-          text: "Here is some relevant information that you can use to answer the question:",
-        },
-        ...topKChunks.map(
-          (chunk) =>
-            ({
-              type: "text",
-              text: chunk.content,
-            }) as LanguageModelV1TextPart,
-        ),
-      ],
-    });
-
-    return { ...params, prompt: messages };
+    return addToLastUserMessage({ text, params });
   },
 };
