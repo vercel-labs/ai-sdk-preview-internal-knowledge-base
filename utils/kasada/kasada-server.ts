@@ -63,7 +63,7 @@ async function getKasadaMetadata(request: NextRequest): Promise<{
     clientIp:
       process.env.NODE_ENV === "development"
         ? "65.204.128.202"
-        : String(request.headers.get("x-real-ip") || request.ip),
+        : String(request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for") || "unknown"),
     headers: headersArray,
     method: request.method as APIRequest["method"],
     protocol: url.protocol.slice(0, -1).toUpperCase() as APIRequest["protocol"],
@@ -181,7 +181,7 @@ export async function kasadaHandler(
       track("kasada-blocked", {
         classification: metadata.classification,
         mode: metadata.application.mode,
-        ip: request.ip || "unknown",
+        ip: request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for") || "unknown",
       }),
     );
     const blockResponse = new Response(undefined, {
@@ -199,7 +199,7 @@ export async function kasadaHandler(
         track("kasada-good-bot", {
           classification: metadata.classification,
           userAgent: request.headers.get("user-agent") || "unknown",
-          ip: request.ip || "unknown",
+          ip: request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for") || "unknown",
           model: body.model || "unknown",
           prompt: body.messages?.[0]?.content || "unknown",
         }),
