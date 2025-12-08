@@ -22,7 +22,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "framer-motion": "^11.3.19",
-    "next": "^15.6.0-canary.58",
+    "next": "15.0.5",
     "next-auth": "5.0.0-beta.21",
     "pdf-parse": "^1.1.1",
     "postgres": "^3.4.4",
