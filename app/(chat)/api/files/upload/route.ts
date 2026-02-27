@@ -1,7 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
 import { insertChunks } from "@/app/db";
 import { getPdfContentFromUrl } from "@/utils/pdf";
-import { openai } from "@ai-sdk/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { put } from "@vercel/blob";
 import { embedMany } from "ai";
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
   const chunkedContent = await textSplitter.createDocuments([content]);
 
   const { embeddings } = await embedMany({
-    model: openai.embedding("text-embedding-3-small"),
+    model: "openai/text-embedding-3-small",
     values: chunkedContent.map((chunk) => chunk.pageContent),
   });
 
