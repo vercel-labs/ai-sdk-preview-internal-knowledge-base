@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/provider": "^3.0.8",
     "@ai-sdk/react": "^3.0.0",
     "@langchain/textsplitters": "^0.0.3",
     "@vercel/analytics": "^1.3.1",
