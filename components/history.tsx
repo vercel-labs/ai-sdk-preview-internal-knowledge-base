@@ -120,7 +120,7 @@ export const History = () => {
                         },
                       )}
                     >
-                      {chat.messages[0].content as string}
+                      {chat.messages[0].parts?.find(p => p.type === "text")?.text ?? ""}
                     </Link>
                   ))}
               </div>

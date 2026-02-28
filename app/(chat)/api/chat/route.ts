@@ -1,10 +1,19 @@
 import { customModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
 import { createMessage } from "@/app/db";
-import { streamText } from "ai";
+import {
+  convertToModelMessages,
+  generateId,
+  streamText,
+  UIMessage,
+} from "ai";
 
 export async function POST(request: Request) {
-  const { id, messages, selectedFilePathnames } = await request.json();
+  const { id, messages, selectedFilePathnames }: {
+    id: string;
+    messages: Array<UIMessage>;
+    selectedFilePathnames: string[];
+  } = await request.json();
 
   const session = await auth();
 
@@ -12,20 +21,27 @@ export async function POST(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  const modelMessages = await convertToModelMessages(messages);
+
   const result = streamText({
     model: customModel,
     system:
       "you are a friendly assistant! keep your responses concise and helpful.",
-    messages,
-    experimental_providerMetadata: {
+    messages: modelMessages,
+    providerOptions: {
       files: {
         selection: selectedFilePathnames,
       },
     },
     onFinish: async ({ text }) => {
+      const assistantMessage: UIMessage = {
+        id: generateId(),
+        role: "assistant",
+        parts: [{ type: "text", text }],
+      };
       await createMessage({
         id,
-        messages: [...messages, { role: "assistant", content: text }],
+        messages: [...messages, assistantMessage],
         author: session.user?.email!,
       });
     },
@@ -35,5 +51,5 @@ export async function POST(request: Request) {
     },
   });
 
-  return result.toDataStreamResponse({});
+  return result.toUIMessageStreamResponse();
 }

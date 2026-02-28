@@ -1,7 +1,7 @@
 "use client";
 
-import { Message } from "ai";
-import { useChat } from "ai/react";
+import { UIMessage, DefaultChatTransport } from "ai";
+import { useChat } from "@ai-sdk/react";
 import { useEffect, useState } from "react";
 import { Files } from "@/components/files";
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,7 +29,7 @@ export function Chat({
   session,
 }: {
   id: string;
-  initialMessages: Array<Message>;
+  initialMessages: Array<UIMessage>;
   session: Session | null;
 }) {
   const [selectedFilePathnames, setSelectedFilePathnames] = useState<
@@ -37,6 +37,7 @@ export function Chat({
   >([]);
   const [isFilesVisible, setIsFilesVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     if (isMounted !== false && session && session.user) {
@@ -63,13 +64,23 @@ export function Chat({
     }
   }, [session]);
 
-  const { messages, handleSubmit, input, setInput, append } = useChat({
-    body: { id, selectedFilePathnames },
-    initialMessages,
+  const { messages, sendMessage } = useChat({
+    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    messages: initialMessages,
     onFinish: () => {
       window.history.replaceState({}, "", `/${id}`);
     },
   });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    sendMessage(
+      { text: input },
+      { body: { id, selectedFilePathnames } },
+    );
+    setInput("");
+  };
 
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -81,13 +92,19 @@ export function Chat({
           ref={messagesContainerRef}
           className="flex flex-col gap-4 h-full w-dvw items-center overflow-y-scroll"
         >
-          {messages.map((message, index) => (
-            <PreviewMessage
-              key={`${id}-${index}`}
-              role={message.role}
-              content={message.content}
-            />
-          ))}
+          {messages.map((message, index) => {
+            const textContent = message.parts
+              .filter((p): p is { type: "text"; text: string } => p.type === "text")
+              .map((p) => p.text)
+              .join("");
+            return (
+              <PreviewMessage
+                key={`${id}-${index}`}
+                role={message.role}
+                content={textContent}
+              />
+            );
+          })}
           <div
             ref={messagesEndRef}
             className="flex-shrink-0 min-w-[24px] min-h-[24px]"
@@ -105,11 +122,11 @@ export function Chat({
                 className={index > 1 ? "hidden sm:block" : "block"}
               >
                 <button
-                  onClick={async () => {
-                    append({
-                      role: "user",
-                      content: suggestedAction.action,
-                    });
+                  onClick={() => {
+                    sendMessage(
+                      { text: suggestedAction.action },
+                      { body: { id, selectedFilePathnames } },
+                    );
                   }}
                   className="w-full text-left border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg p-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex flex-col"
                 >

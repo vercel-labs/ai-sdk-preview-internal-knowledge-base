@@ -1,4 +1,4 @@
-import { Message } from "ai";
+import { UIMessage } from "ai";
 import { Chat } from "@/schema";
 import { getChatById } from "@/app/db";
 import { notFound } from "next/navigation";
@@ -16,7 +16,7 @@ export default async function Page({ params }: { params: any }) {
   // type casting
   const chat: Chat = {
     ...chatFromDb,
-    messages: chatFromDb.messages as Message[],
+    messages: chatFromDb.messages as UIMessage[],
   };
 
   const session = await auth();
