@@ -1,4 +1,4 @@
-import { customModel } from "@/ai";
+import { getCustomModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
 import { createMessage } from "@/app/db";
 import { convertToCoreMessages, streamText } from "ai";
@@ -13,6 +13,7 @@ export async function POST(request: Request) {
   const { id, messages, selectedFilePathnames } = await request.json();
 
   const session = await auth();
+  const customModel = await getCustomModel();
 
   const result = await streamText({
     model: customModel,
