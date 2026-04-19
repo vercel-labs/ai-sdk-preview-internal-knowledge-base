@@ -1,17 +1,13 @@
 import { kv } from "@vercel/kv";
 import NextAuth from "next-auth";
-import { NextFetchEvent, NextRequest } from "next/server";
-import { kasadaHandler } from "./utils/kasada/kasada-server";
+import { NextRequest, NextFetchEvent } from "next/server";
 import { authConfig } from "@/app/(auth)/auth.config";
 
 const MAX_REQUESTS = 25;
 
 export const { auth } = NextAuth(authConfig);
 
-export async function botProtectionMiddleware(
-  request: NextRequest,
-  event: NextFetchEvent,
-) {
+export async function rateLimitMiddleware(request: NextRequest) {
   if (["POST", "DELETE"].includes(request.method)) {
     const realIp = request.headers.get("x-real-ip") || "no-ip";
     const pipeline = kv.pipeline();
@@ -26,13 +22,11 @@ export async function botProtectionMiddleware(
     if (requests > MAX_REQUESTS) {
       return new Response("Too many requests", { status: 429 });
     }
-
-    return kasadaHandler(request, event);
   }
 }
 
 export async function middleware(request: NextRequest, event: NextFetchEvent) {
-  const response = await botProtectionMiddleware(request, event);
+  const response = await rateLimitMiddleware(request);
   if (response) return response;
 
   // @ts-expect-error type mismatch
