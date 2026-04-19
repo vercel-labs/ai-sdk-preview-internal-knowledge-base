@@ -1,6 +1,7 @@
 import { auth } from "@/app/(auth)/auth";
 import { getChunksByFilePaths } from "@/app/db";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { getVercelOidcToken } from "@vercel/functions/oidc";
 import {
   cosineSimilarity,
   embed,
@@ -19,6 +20,11 @@ const selectionSchema = z.object({
 
 export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   transformParams: async ({ params }) => {
+    const openai = createOpenAI({
+      baseURL: "https://ai-gateway.vercel.sh/v1",
+      apiKey: await getVercelOidcToken(),
+    });
+
     const session = await auth();
 
     // if (!session) return params; // no user session

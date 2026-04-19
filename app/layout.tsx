@@ -2,7 +2,6 @@ import { Navbar } from "@/components/navbar";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { KasadaClient } from "@/utils/kasada/kasada-client";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -21,7 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <KasadaClient />
         <Toaster position="top-center" />
         <Navbar />
         {children}
